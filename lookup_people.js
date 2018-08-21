@@ -38,9 +38,9 @@ client.connect((err) => {
 
   let sql = `SELECT DISTINCT first_name AS person_found, last_name, birthdate
             FROM famous_people 
-            WHERE first_name = '${personToLookup}'`;
+            WHERE first_name = $1::text`;
 
-  client.query(sql, (err, result) => {
+  client.query(sql, personToLookup, (err, result) => {
     if (err) {
       return console.error("error running query", err);
     }

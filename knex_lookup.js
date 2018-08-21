@@ -36,7 +36,7 @@ function getPersonInfoString(rows) {
 
 knex.select('first_name as name', 'last_name', 'birthdate')
     .from('famous_people')
-    .where('first_name', `${personToLookup}`)
+    .where(knex.raw('first_name = ?', personToLookup))
     .then(rows => {
         let stringToDisplay = getPersonInfoString(rows);
         console.log(stringToDisplay);
