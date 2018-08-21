@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/jothamyelle/test_db#readme",
   "dependencies": {
+    "knex": "^0.15.2",
     "pg": "^7.4.3"
   }
 }
