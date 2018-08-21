@@ -13,25 +13,41 @@ const client = new pg.Client({
   ssl      : settings.ssl
 });
 
+function getPersonInfoString(result) {
+  let numOfResults = result.rowCount;
+  let stringToDisplay = ``;
+
+  stringToDisplay += `Found ${numOfResults} person(s) by the name '${personToLookup}'\n`;
+
+  result.rows.forEach((row, index) => {
+    let name = row.person_found;
+    let lastName = row.last_name;
+    let birthdate = row.birthdate.toISOString().split('T')[0];
+    stringToDisplay += `- ${index + 1}: ${name} ${lastName}, born '${birthdate}'`;
+    if (index != result.rows.length - 1) {
+      stringToDisplay += `\n`;
+    }
+  });
+  return stringToDisplay;
+}
+
 client.connect((err) => {
   if (err) {
     return console.error("Connection Error", err);
   }
-  client.query(`SELECT DISTINCT first_name AS person_found,  last_name, birthdate
-                FROM famous_people 
-                WHERE first_name = '${personToLookup}'`, (err, result) => {
+
+  let sql = `SELECT DISTINCT first_name AS person_found, last_name, birthdate
+            FROM famous_people 
+            WHERE first_name = '${personToLookup}'`;
+
+  client.query(sql, (err, result) => {
     if (err) {
       return console.error("error running query", err);
     }
-    let numOfResults = result.rowCount;
-    
-    console.log(`Found ${numOfResults} person(s) by the name '${personToLookup}'`);
-    for (let i = 0; i < numOfResults; i++) {
-      let name = result.rows[i].person_found;
-      let lastName = result.rows[i].last_name;
-      let birthdate = result.rows[i].birthdate.toISOString().split('T')[0];
-      console.log(`- ${i + 1}: ${name} ${lastName}, born '${birthdate}'`);
-    }
+
+    let stringToDisplay = getPersonInfoString(result);
+    console.log(stringToDisplay);
+
     client.end();
   });
 });
