@@ -17,13 +17,13 @@ var knex = require('knex')({
 // var pg = require('knex')({client: 'pg'});
 
 function getPersonInfoString(rows) {
-  let numOfResults = rows.rowCount;
+  let numOfResults = rows.length;
   let stringToDisplay = ``;
 
   stringToDisplay += `Found ${numOfResults} person(s) by the name '${personToLookup}'\n`;
 
   rows.forEach((row, index) => {
-    let name = row.person_found;
+    let name = row.name;
     let lastName = row.last_name;
     let birthdate = row.birthdate.toISOString().split('T')[0];
     stringToDisplay += `- ${index + 1}: ${name} ${lastName}, born '${birthdate}'`;
